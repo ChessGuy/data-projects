@@ -33,7 +33,7 @@ spotify_songs <- tuesdata$spotify_songs
 # `spotify_songs.csv`
 
 |variable                 |class     |description |
-|:---|:---|:-----------|
+|:---|:---|:-------|
 |track_id                 |character | Song unique ID|
 |track_name               |character | Song Name|
 |track_artist             |character | Song Artist|
