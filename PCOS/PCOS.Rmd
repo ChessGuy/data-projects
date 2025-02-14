@@ -1,0 +1,34 @@
+---
+title: "PCOS"
+output: html_notebook
+---
+
+# 1. Problem Statement
+
+The goal of this analysis is to use the Polycystic Ovary Syndrome (PCOS) dataset from Kaggle (<https://www.kaggle.com/datasets/hasaanrana/diet-exercise-and-pcos-insights>) to determine if there are any factors that could be linked to having the disease.
+
+# 2. Data Loading and Exploration
+
+```{r}
+library('dplyr')
+library('ggplot2')
+library('tidyr')
+```
+
+
+
+# 3. Data Cleaning and Preparation
+
+## 3.1 Dealing with Missing and Duplicated Values
+
+## 3.2 Adding and Modifying Columns
+
+# 4. Data Visualization in Tableau 
+
+# 5. Analysis
+
+## 5.1 General Questions
+
+## 5.2 Inferential Statistics
+
+# 6. Conclusion
