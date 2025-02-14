@@ -1,6 +1,6 @@
 ---
 title: "PCOS"
-output: html_notebook
+output: pdf
 ---
 
 # 1. Problem Statement
