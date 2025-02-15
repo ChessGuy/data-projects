@@ -1,6 +1,6 @@
 ---
-title: "PCOS"
-output: pdf
+title: "Polycystic Ovary Syndrome (PCOS)"
+output: pdf_document
 ---
 
 # 1. Problem Statement
@@ -9,13 +9,35 @@ The goal of this analysis is to use the Polycystic Ovary Syndrome (PCOS) dataset
 
 # 2. Data Loading and Exploration
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library('dplyr')
 library('ggplot2')
 library('tidyr')
+library('rmarkdown')
 ```
 
+```{r}
+pcos_data_raw <- read.csv('pcos_data.csv')
+```
 
+```{r}
+dim(pcos_data_raw)
+```
+The dataset contains 173 rows and 36 columns.
+
+```{r}
+head(pcos_data_raw)
+```
+```{r}
+colnames(pcos_data_raw)
+```
+```{r}
+summary(pcos_data_raw)
+```
+```{r}
+count(pcos_data_raw, PCOS, sort = TRUE)
+```
+The dataset contains 134 women without PCOS, 38 with PCOS, and one entry with both values.
 
 # 3. Data Cleaning and Preparation
 
@@ -23,7 +45,7 @@ library('tidyr')
 
 ## 3.2 Adding and Modifying Columns
 
-# 4. Data Visualization in Tableau 
+# 4. Data Visualization in Tableau
 
 # 5. Analysis
 
