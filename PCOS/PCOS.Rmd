@@ -7,6 +7,8 @@ output: pdf_document
 
 The goal of this analysis is to use the Polycystic Ovary Syndrome (PCOS) dataset from Kaggle (<https://www.kaggle.com/datasets/hasaanrana/diet-exercise-and-pcos-insights>) to determine if there are any factors that could be linked to having the disease.
 
+For more information about PCOS, here is a link to the Mayo Clinic (<https://www.mayoclinic.org/diseases-conditions/pcos/symptoms-causes/syc-20353439>).
+
 # 2. Data Loading and Exploration
 
 ```{r message=FALSE, warning=FALSE}
@@ -23,27 +25,163 @@ pcos_data_raw <- read.csv('pcos_data.csv')
 ```{r}
 dim(pcos_data_raw)
 ```
+
 The dataset contains 173 rows and 36 columns.
 
 ```{r}
 head(pcos_data_raw)
 ```
+
 ```{r}
 colnames(pcos_data_raw)
 ```
+
 ```{r}
 summary(pcos_data_raw)
 ```
+
 ```{r}
 count(pcos_data_raw, PCOS, sort = TRUE)
 ```
+
 The dataset contains 134 women without PCOS, 38 with PCOS, and one entry with both values.
 
 # 3. Data Cleaning and Preparation
 
 ## 3.1 Dealing with Missing and Duplicated Values
 
+```{r}
+sum(is.na(pcos_data_raw))
+```
+
+The dataset does not contain any missing values.
+
+```{r}
+sum(duplicated(pcos_data_raw))
+```
+
+The dataset does not contain any duplicated rows.
+
 ## 3.2 Adding and Modifying Columns
+
+```{r}
+summary(pcos_data_raw$Height_ft)
+```
+
+The column above is called "Height_ft", but the values range from 124 to 182. That range is not possible for a human. According to the dataset's author, this column is actually in cm. The column name will be changed to reflect that.
+
+```{r}
+pcos_data_clean <- pcos_data_raw
+```
+
+```{r}
+pcos_data_clean <- rename(pcos_data_clean, Height_cm = Height_ft)
+```
+
+```{r}
+head(pcos_data_clean)
+```
+
+Since this study will be used within the USA, new columns will be added to convert the kg and cm columns to lbs and in respectively.
+
+```{r}
+pcos_data_clean <- mutate(pcos_data_clean, Height_in = Height_cm / 2.54, Weight_lb = Weight_kg * 2.204)
+# 2.54 cm in an inch
+# 2.204 kg in a lb
+```
+
+```{r}
+head(select(pcos_data_clean, Weight_kg, Weight_lb, Height_cm, Height_in))
+```
+
+The Weight_kg and Height_cm columns will now be dropped from the dataset.
+
+```{r}
+pcos_data_clean <- select(pcos_data_clean, -c(Weight_kg, Height_cm))
+```
+
+```{r}
+head(pcos_data_clean)
+```
+
+A common measure for if someone is at a healthy weight for their height is body mass index (BMI). The formula for this using English units is:
+
+$$
+BMI = 703 * \frac{weight (lb)}{height^2 (in)}
+$$
+
+This column will be added to the dataset.
+
+```{r}
+pcos_data_clean <- mutate(pcos_data_clean, BMI = 703 * (Weight_lb / (Height_in ^ 2)))
+```
+
+```{r}
+head(select(pcos_data_clean, Weight_lb, Height_in, BMI))
+```
+
+Since the new columns we added to the end of the dataframe, the will be rearranged to the second through fourth columns.
+
+```{r}
+pcos_data_clean <- select(pcos_data_clean, c(1, 35, 36, 37, 2:34))
+```
+
+```{r}
+head(pcos_data_clean)
+```
+
+The Marital_Status column will be checked to make sure the selections are valid.
+
+```{r}
+count(pcos_data_clean, Marital_Status)
+```
+
+According to the CDC (<https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html>), there are ranges within BMI that can be used to categorize a person's health as follows:
+
+-   Less than 18.5: Underweight
+-   18.5 - 24.9: Healthy Weight
+-   25 - 29.9: Overweight
+-   30 - 34.5: Class 1 Obesity
+-   35 - 39.9: Class 2 Obesity
+-   40+: Class 3 Obesity
+
+A new column with this category will be added to make it easier to compare people based on BMI.
+
+```{r}
+BMI_groups <- cut(pcos_data_clean$BMI, breaks = c(0, 18.4, 24.9, 29.9, 34.5, 39.9, 100), 
+                  labels = c("Underweight", 
+                             "Healthy Weight", 
+                             "Overweight", 
+                             "Class 1 Obesity", 
+                             "Class 2 Obesity",
+                             "Class 3 Obesity"))
+```
+
+```{r}
+print(table(BMI_groups))
+```
+```{r}
+count(pcos_data_clean, BMI < 18.4)
+```
+
+```{r}
+pcos_data_clean$BMI_Cat <- BMI_groups
+```
+
+```{r}
+head(select(pcos_data_clean, BMI_Cat, BMI))
+```
+```{r}
+pcos_data_clean <- select(pcos_data_clean, 1:4, 38, 5:37)
+```
+
+```{r}
+head(pcos_data_clean)
+```
+
+```{r}
+write.csv(pcos_data_clean,"pcos_data_clean.csv", row.names = FALSE)
+```
 
 # 4. Data Visualization in Tableau
 
