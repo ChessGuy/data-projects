@@ -160,6 +160,7 @@ BMI_groups <- cut(pcos_data_clean$BMI, breaks = c(0, 18.4, 24.9, 29.9, 34.5, 39.
 ```{r}
 print(table(BMI_groups))
 ```
+
 ```{r}
 count(pcos_data_clean, BMI < 18.4)
 ```
@@ -171,6 +172,7 @@ pcos_data_clean$BMI_Cat <- BMI_groups
 ```{r}
 head(select(pcos_data_clean, BMI_Cat, BMI))
 ```
+
 ```{r}
 pcos_data_clean <- select(pcos_data_clean, 1:4, 38, 5:37)
 ```
@@ -185,7 +187,13 @@ write.csv(pcos_data_clean,"pcos_data_clean.csv", row.names = FALSE)
 
 # 4. Data Visualization in Tableau
 
+Here is a dashboard of some of the insights using Tableau.
+
+![](Tableau_PCOS_Insights.png)
+
 # 5. Analysis
+
+
 
 ## 5.1 General Questions
 
