@@ -1,6 +1,8 @@
 ---
-title: "Polycystic Ovary Syndrome (PCOS)"
-output: pdf_document
+title: "Polycystic Ovary Syndrome (PCOS) Analysis"
+output: 
+  pdf_document:
+      toc: true
 ---
 
 # 1. Problem Statement
@@ -28,7 +30,7 @@ dim(pcos_data_raw)
 
 The dataset contains 173 rows and 36 columns.
 
-```{r}
+```{r include=FALSE}
 head(pcos_data_raw)
 ```
 
@@ -36,7 +38,7 @@ head(pcos_data_raw)
 colnames(pcos_data_raw)
 ```
 
-```{r}
+```{r include=FALSE}
 summary(pcos_data_raw)
 ```
 
@@ -78,7 +80,7 @@ pcos_data_clean <- pcos_data_raw
 pcos_data_clean <- rename(pcos_data_clean, Height_cm = Height_ft)
 ```
 
-```{r}
+```{r include=FALSE}
 head(pcos_data_clean)
 ```
 
@@ -90,7 +92,7 @@ pcos_data_clean <- mutate(pcos_data_clean, Height_in = Height_cm / 2.54, Weight_
 # 2.204 kg in a lb
 ```
 
-```{r}
+```{r include=FALSE}
 head(select(pcos_data_clean, Weight_kg, Weight_lb, Height_cm, Height_in))
 ```
 
@@ -100,7 +102,7 @@ The Weight_kg and Height_cm columns will now be dropped from the dataset.
 pcos_data_clean <- select(pcos_data_clean, -c(Weight_kg, Height_cm))
 ```
 
-```{r}
+```{r include=FALSE}
 head(pcos_data_clean)
 ```
 
@@ -116,7 +118,7 @@ This column will be added to the dataset.
 pcos_data_clean <- mutate(pcos_data_clean, BMI = 703 * (Weight_lb / (Height_in ^ 2)))
 ```
 
-```{r}
+```{r include=FALSE}
 head(select(pcos_data_clean, Weight_lb, Height_in, BMI))
 ```
 
@@ -126,7 +128,7 @@ Since the new columns we added to the end of the dataframe, the will be rearrang
 pcos_data_clean <- select(pcos_data_clean, c(1, 35, 36, 37, 2:34))
 ```
 
-```{r}
+```{r include=FALSE}
 head(pcos_data_clean)
 ```
 
@@ -169,7 +171,7 @@ count(pcos_data_clean, BMI < 18.4)
 pcos_data_clean$BMI_Cat <- BMI_groups
 ```
 
-```{r}
+```{r include=FALSE}
 head(select(pcos_data_clean, BMI_Cat, BMI))
 ```
 
@@ -177,7 +179,7 @@ head(select(pcos_data_clean, BMI_Cat, BMI))
 pcos_data_clean <- select(pcos_data_clean, 1:4, 38, 5:37)
 ```
 
-```{r}
+```{r include=FALSE}
 head(pcos_data_clean)
 ```
 
@@ -193,10 +195,152 @@ Here is a dashboard of some of the insights using Tableau.
 
 # 5. Analysis
 
-
-
 ## 5.1 General Questions
+
+1.  How many women with PCOS have a BMI under 25?
+
+```{r}
+count(pcos_data_clean, PCOS == 'Yes'& BMI < 25)
+```
+
+2.  What is the mean BMI women with and without PCOS?
+
+```{r}
+pcos_data_clean %>% group_by(PCOS) %>% summarise(mean(BMI))
+```
+
+3.  How many women with PCOS also have a family history of PCOS?
+
+```{r}
+count(pcos_data_clean, PCOS == 'Yes'& Family_History_PCOS == "Yes")
+```
+
+4.  What is the distribution of BMI of women with PCOS?
+
+```{r}
+filter_data <- filter(pcos_data_clean, PCOS == 'Yes') %>% select(BMI)
+
+ggplot(filter_data, aes(x=BMI)) + 
+  geom_histogram(binwidth = 0.5, fill = 'lightblue', color = 'black') + 
+  ggtitle("Histogram of BMI of Women with PCOS") + ylab('Number of Women')
+```
+
+5.  How many women with PCOS fall under each category of exercise frequency (in a bar graph)?
+
+```{r}
+filter_data <- filter(pcos_data_clean, PCOS == 'Yes') %>% 
+  select(Exercise_Frequency) %>%  
+  mutate(filter_data, Exercise_Frequency = factor(Exercise_Frequency, levels=c("Never", "Rarely", "1-2 Times a Week", "3-4 Times a Week", "Daily"))) 
+
+ggplot(filter_data, aes(x=Exercise_Frequency)) + 
+  geom_bar(fill = 'lightblue', color = 'black') + 
+  ggtitle("Bar Graph of Exercise Frequency of Women with PCOS") + 
+  ylab('Number of Women') +
+  xlab('Exercise Frequency')
+```
 
 ## 5.2 Inferential Statistics
 
+
+**t-Test for Mean BMI of PCOS Population**
+
+To test if the BMI women with PCOS in the population is higher than the healthy range, a t-test will be used to find the population BMI confidence interval.
+
+Here is the set up for the t-test with assumptions:
+
+Confidence level: 95% (p value = 0.05)
+
+-   H0: The population mean BMI for women with PCOS includes 25 (upper end of healthy)
+-   H1: The population mean BMI for women with PCOS excludes 25 (upper end of healthy)
+
+Assumptions:
+
+1.  Can the observations be independent?
+
+    The data is assumed to come from a random survey of women with and without PCOS.
+
+2.  Is the data normally distributed?
+
+    While BMI is not normally distributed within the sample, given a large enough sample, the distribution is assumed to approach normal due to the central limit theorem.
+
+```{r}
+alpha <- 0.95
+
+pcos_bmi_data <- filter(pcos_data_clean, PCOS == 'Yes') %>% select(BMI)
+
+```
+
+```{r}
+t.test(pcos_bmi_data, conf.level = alpha)
+```
+
+The test shows with a 95% confidence level that the mean BMI of the population of women with PCOS is between 22.9 and 26.0. Since that interval contains 25, the test fails to reject the null hypothesis.
+
+
+**Two Sample t-Test for Mean BMI of PCOS vs. No PCOS**
+
+```{r}
+pcos_data_clean %>% group_by(PCOS) %>% summarise(mean(BMI))
+```
+
+The mean BMI for women with PCOS is greater than the mean BMI for women without PCOS within the sample data. A two sample t-test will be used to determine if the mean BMI for women with PCOS is greater than the BMI of women without PCOS in the population.
+
+Here is the set up for the two sample t-test:
+
+Confidence level: 95% (p value = 0.05)
+
+-   H0: The population mean BMI for women with PCOS is less than or equal to the mean BMI for women without PCOS
+-   H1: The population mean BMI for women with PCOS is greater than the mean BMI for women without PCOS
+
+```{r}
+no_pcos_bmi_data <- filter(pcos_data_clean, PCOS == 'No') %>% select(BMI)
+```
+
+```{r}
+t.test(pcos_bmi_data, no_pcos_bmi_data, alternative = "greater", var.equal = FALSE)
+```
+Assuming the population mean BMI for women with PCOS is less than or equal to the mean BMI for women without PCOS, there is a 0.00205 probability that the data observed is due to sampling variably. Since 0.00205 is less than the p value of 0.05 for a 95% confidence level, the null hypothesis is rejected and conclude that the population mean BMI for women with PCOS is greater than the mean BMI for women without PCOS.
+
+
+**Chi Square Test for Effect of Family History of PCOS**
+
+```{r}
+pcos_data_yes_no <- filter(pcos_data_clean, (PCOS == "Yes" | PCOS == "No") & (Family_History_PCOS == "Yes" | Family_History_PCOS == "No"))
+
+pcos_fam_hist_table <- table(pcos_data_yes_no$PCOS, pcos_data_yes_no$Family_History_PCOS)
+
+names(dimnames(pcos_fam_hist_table)) <- c("PCOS", "Family History of PCOS")
+pcos_fam_hist_table
+```
+
+According to the table above, 10 of the women with PCOS have a family history of PCOS.  To test how significant family history is to having PCOS, a chi square test of independence will be used.  
+
+Here is the set up for the chi square test:
+
+Confidence level: 95% (p value = 0.05)
+
+-   H0: Having PCOS is independent from having a family history of PCOS
+-   H1: Having PCOS is dependent on having a family history of PCOS
+
+
+```{r}
+chisq <- chisq.test(pcos_fam_hist_table)
+chisq
+```
+```{r}
+chisq$residuals
+```
+Assuming that having PCOS is independent from having a family history of PCOS, there is a 0.05654 probability that the observed data is due to sampling variability.  Because 0.05654 is greater than the p value of 0.05 for a 95% confidence level, the test fails to reject the null hypothesis and conclude that having PCOS is independent from having a family history of PCOS.
+
+
 # 6. Conclusion
+
+The goal of this analysis was to uncover insights about the variables related to having PCOS.  Here are the results of the factors studied given a 95% confidence level:
+
+- The mean BMI for a women with PCOS does include the upper end healthy BMI of 25.
+- The mean BMI for a women with PCOS is greater than the mean BMI of women without PCOS.
+- Family history of PCOS is independent from having PCOS.
+
+Additionally, visualizing the data has shown that the majority of women with PCOS rarely exercise, and have a healthy BMI.  
+
+While there are several other factors to analyze related to this dataset, it shows how important having a healthy weight is to PCOS.  That conclusion is supported by what we already know about PCOS according to Medical News Today that between 38 - 88% of women with PCOS are overweight or obese (https://www.medicalnewstoday.com/articles/pcos-and-obesity#the-connection).
