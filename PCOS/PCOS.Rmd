@@ -241,7 +241,6 @@ ggplot(filter_data, aes(x=Exercise_Frequency)) +
 
 ## 5.2 Inferential Statistics
 
-
 **t-Test for Mean BMI of PCOS Population**
 
 To test if the BMI women with PCOS in the population is higher than the healthy range, a t-test will be used to find the population BMI confidence interval.
@@ -276,7 +275,6 @@ t.test(pcos_bmi_data, conf.level = alpha)
 
 The test shows with a 95% confidence level that the mean BMI of the population of women with PCOS is between 22.9 and 26.0. Since that interval contains 25, the test fails to reject the null hypothesis.
 
-
 **Two Sample t-Test for Mean BMI of PCOS vs. No PCOS**
 
 ```{r}
@@ -299,8 +297,8 @@ no_pcos_bmi_data <- filter(pcos_data_clean, PCOS == 'No') %>% select(BMI)
 ```{r}
 t.test(pcos_bmi_data, no_pcos_bmi_data, alternative = "greater", var.equal = FALSE)
 ```
-Assuming the population mean BMI for women with PCOS is less than or equal to the mean BMI for women without PCOS, there is a 0.00205 probability that the data observed is due to sampling variably. Since 0.00205 is less than the p value of 0.05 for a 95% confidence level, the null hypothesis is rejected and conclude that the population mean BMI for women with PCOS is greater than the mean BMI for women without PCOS.
 
+Assuming the population mean BMI for women with PCOS is less than or equal to the mean BMI for women without PCOS, there is a 0.00205 probability that the data observed is due to sampling variably. Since 0.00205 is less than the p value of 0.05 for a 95% confidence level, the null hypothesis is rejected and conclude that the population mean BMI for women with PCOS is greater than the mean BMI for women without PCOS.
 
 **Chi Square Test for Effect of Family History of PCOS**
 
@@ -313,7 +311,7 @@ names(dimnames(pcos_fam_hist_table)) <- c("PCOS", "Family History of PCOS")
 pcos_fam_hist_table
 ```
 
-According to the table above, 10 of the women with PCOS have a family history of PCOS.  To test how significant family history is to having PCOS, a chi square test of independence will be used.  
+According to the table above, 10 of the women with PCOS have a family history of PCOS. To test how significant family history is to having PCOS, a chi square test of independence will be used.
 
 Here is the set up for the chi square test:
 
@@ -322,25 +320,25 @@ Confidence level: 95% (p value = 0.05)
 -   H0: Having PCOS is independent from having a family history of PCOS
 -   H1: Having PCOS is dependent on having a family history of PCOS
 
-
 ```{r}
 chisq <- chisq.test(pcos_fam_hist_table)
 chisq
 ```
+
 ```{r}
 chisq$residuals
 ```
-Assuming that having PCOS is independent from having a family history of PCOS, there is a 0.05654 probability that the observed data is due to sampling variability.  Because 0.05654 is greater than the p value of 0.05 for a 95% confidence level, the test fails to reject the null hypothesis and conclude that having PCOS is independent from having a family history of PCOS.
 
+Assuming that having PCOS is independent from having a family history of PCOS, there is a 0.05654 probability that the observed data is due to sampling variability. Because 0.05654 is greater than the p value of 0.05 for a 95% confidence level, the test fails to reject the null hypothesis and conclude that having PCOS is independent from having a family history of PCOS.
 
 # 6. Conclusion
 
-The goal of this analysis was to uncover insights about the variables related to having PCOS.  Here are the results of the factors studied given a 95% confidence level:
+The goal of this analysis was to uncover insights about the variables related to having PCOS. Here are the results of the factors studied given a 95% confidence level:
 
-- The mean BMI for a women with PCOS does include the upper end healthy BMI of 25.
-- The mean BMI for a women with PCOS is greater than the mean BMI of women without PCOS.
-- Family history of PCOS is independent from having PCOS.
+-   The mean BMI for a women with PCOS does include the upper end healthy BMI of 25.
+-   The mean BMI for a women with PCOS is greater than the mean BMI of women without PCOS.
+-   Family history of PCOS is independent from having PCOS.
 
-Additionally, visualizing the data has shown that the majority of women with PCOS rarely exercise, and have a healthy BMI.  
+Additionally, visualizing the data has shown that the majority of women with PCOS rarely exercise, and have a healthy BMI.
 
-While there are several other factors to analyze related to this dataset, it shows how important having a healthy weight is to PCOS.  That conclusion is supported by what we already know about PCOS according to Medical News Today that between 38 - 88% of women with PCOS are overweight or obese (https://www.medicalnewstoday.com/articles/pcos-and-obesity#the-connection).
+While there are several other factors to analyze related to this dataset, it shows how important having a healthy weight is to PCOS. That conclusion is supported by what we already know about PCOS according to Medical News Today that between 38 - 88% of women with PCOS are overweight or obese (<https://www.medicalnewstoday.com/articles/pcos-and-obesity#the-connection>).
