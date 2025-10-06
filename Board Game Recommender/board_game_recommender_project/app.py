@@ -9,15 +9,15 @@ app.secret_key = 'game'
 @app.route('/')
 @app.route('/about')
 def about():
-    return render_template("about.html")
+    return render_template("about.html", active_page='about')
 
 @app.route('/projects')
 def projects():
-    return render_template("projects.html")
+    return render_template("projects.html", active_page='projects')
 
 @app.route('/resume')
 def resume():
-    return render_template("resume.html")
+    return render_template("resume.html", active_page='resume')
 
 @app.route('/capstone', methods = ['GET', 'POST'])
 def capstone():
@@ -51,7 +51,7 @@ def capstone():
     
     recommendation_list = []
     error_message = ""
-    return render_template("capstone.html", inputted_list=session['inputted_list'], recommendation_list=recommendation_list, error_message=error_message)
+    return render_template("capstone.html", active_page='capstone', inputted_list=session['inputted_list'], recommendation_list=recommendation_list, error_message=error_message)
 
 @app.route('/recommend', methods = ['GET', 'POST'])
 def post_recommendations():
@@ -66,7 +66,7 @@ def clear_page():
     session['inputted_list'] = []
     recommendation_list = []
     error_message = ""
-    return render_template('capstone.html', recommendation_list=recommendation_list, error_message=error_message)
+    return render_template('capstone.html', active_page='capstone', recommendation_list=recommendation_list, error_message=error_message)
 
 # if __name__ == '__main__':
 #     app.debug = True
