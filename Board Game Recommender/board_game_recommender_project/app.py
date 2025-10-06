@@ -50,8 +50,16 @@ def capstone():
         return redirect(url_for('capstone'))
     
     recommendation_list = []
-    error_message = "RAR"
+    error_message = ""
     return render_template("capstone.html", inputted_list=session['inputted_list'], recommendation_list=recommendation_list, error_message=error_message)
+
+@app.route('/recommend', methods = ['GET', 'POST'])
+def post_recommendations():
+
+    return
+
+def recommend_games_from_list():
+    return
 
 @app.route('/clear', methods = ['POST'])
 def clear_page():

@@ -17,17 +17,17 @@ and game complexity based on Boardgamegeeks's scale.
 </p>
 
 
-
+<hr>
 <h2>Try it out!</h2>
 
 <p>
-You can input games using the input field and clicking the "add" button after each game.  In addition, you can add any of the common
-games to the list be checking the box next to each game.  When you are done adding games to the list, click the "find recommendations"
-button to see the results
+You can input games using the input field and clicking the "Add to List" button after each game.  In addition, you can add any of the common
+games to the list be checking the box next to each game.  When you are done adding games to the list, click the "Find Recommendations"
+button to see the results.  You can also use the "Clear List" button to start a new list.  
 </p>
 
     <form action="{{ url_for('capstone') }}" method="POST">
-        <h2>Input Games to List</h2>
+        <h3>Input Games to List</h3>
         <ul>
             <li>
                 <input type="checkbox" id="game1" name="checked_1" value="Chess">
@@ -47,11 +47,11 @@ button to see the results
             </li>
         </ul>
         <button type="submit">Add to List</button>
+        <br><br>
     </form>
     <form action="/clear" method="POST">
         <button type="submit">Clear List</button>
     </form>
-
 
 <h3>List of Inputted Games</h3>
 
@@ -61,14 +61,32 @@ button to see the results
     {% endfor %}
 </ul>
 
-<h4>{{ error_message }}</h4>
-<h3>Recommendations</h3>
+<h4>Optional Filters</h4>
+    <input type="number" min="0" class="no-arrows" id="age" name="age" placeholder="Input player age">
+    <label for="age">Minimum player age</label>
+
+    <input type="number" min="0" class="no-arrows" id="player_count" name="player_count" placeholder="Input player count">
+    <label for="player_count">Minimum player count</label>
+
+    <input type="number" min="0" class="no-arrows" id="play_time" name="play_time" placeholder="Input game length">
+    <label for="play_time">Maximum game length (minutes)</label>
+
+    <input type="number" min="1" max="'5" class="no-arrows" id="complexity" name="complexity" placeholder="Input game complexity">
+    <label for="complexity">Maximum game complexity (1 - 5)</label>
+<br><br>
+<form action="/recommend" method="POST">
+    <button type="submit">Find Recommendations</button>
+</form>
+
+<h5>{{ error_message }}</h5>
+
+<h3>Recommendations (Top 20)</h3>
 <ul>
     {% for game in recommendation_list %}
         <li>{{ game }}</li>
     {% endfor %}
 </ul>
-
+<hr>
 <h2>Approach</h2>
 <p>
 The model works by comparing the qualities of each game (such as player count, game duration, type of game, game mechanics, etc.) 
@@ -79,7 +97,7 @@ the model will tend to give priority to those games when making its recommendati
 
 <h2>Results</h2>
 <p>
-The model gives great results based on testing multiple different game lists.  It gives reasonable good results for one game, but the 
-model tends to give better results the more games in the inputted list.  
+The model gives great results based on testing multiple different game lists.  It gives reasonable good results for one game, and the 
+model tends to give better results for larger game lists.  
 </p>
 {% endblock %}
