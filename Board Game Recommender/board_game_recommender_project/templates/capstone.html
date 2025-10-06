@@ -28,7 +28,6 @@ button to see the results.  You can also use the "Clear List" button to start a 
 
     <form action="{{ url_for('capstone') }}" method="POST">
         <h3>Input Games to List</h3>
-        <ul>
             <li>
                 <input type="checkbox" id="game1" name="checked_1" value="Chess">
                 <label for="game1">Chess</label>
@@ -45,7 +44,7 @@ button to see the results.  You can also use the "Clear List" button to start a 
                 <input type="text" id="input" name="input" placeholder="Input game">
                 <label for="input">Manual entry</label>
             </li>
-        </ul>
+        <br>
         <button type="submit">Add to List</button>
         <br><br>
     </form>
@@ -62,19 +61,22 @@ button to see the results.  You can also use the "Clear List" button to start a 
 </ul>
 
 <h4>Optional Filters</h4>
+
+<form action="/recommend" method="POST">
     <input type="number" min="0" class="no-arrows" id="age" name="age" placeholder="Input player age">
     <label for="age">Minimum player age</label>
-
+    <br>
     <input type="number" min="0" class="no-arrows" id="player_count" name="player_count" placeholder="Input player count">
     <label for="player_count">Minimum player count</label>
+    <br>
 
     <input type="number" min="0" class="no-arrows" id="play_time" name="play_time" placeholder="Input game length">
     <label for="play_time">Maximum game length (minutes)</label>
 
+    <br>
     <input type="number" min="1" max="'5" class="no-arrows" id="complexity" name="complexity" placeholder="Input game complexity">
     <label for="complexity">Maximum game complexity (1 - 5)</label>
-<br><br>
-<form action="/recommend" method="POST">
+    <br><br>
     <button type="submit">Find Recommendations</button>
 </form>
 
