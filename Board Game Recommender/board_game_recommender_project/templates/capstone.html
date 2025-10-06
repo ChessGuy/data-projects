@@ -9,22 +9,77 @@
 
 <h2>Problem Statement</h2>
 <p>
-
+One of the current versions of an online board game recommender comes from Boardgamegeek.com, one of the largest websites
+for board games.  The issue is the recommendations that it gives are not the best (in my opinion) and there is no way
+recommend games based on a list.  This project is a board game recommender that takes a list of games as input and recommends 
+games based on the game properties.  The results can also be filtered by minimum player age, maximum game duration, player count, 
+and game complexity based on Boardgamegeeks's scale.
 </p>
+
+
+
+<h2>Try it out!</h2>
+
+<p>
+You can input games using the input field and clicking the "add" button after each game.  In addition, you can add any of the common
+games to the list be checking the box next to each game.  When you are done adding games to the list, click the "find recommendations"
+button to see the results
+</p>
+
+    <form action="{{ url_for('capstone') }}" method="POST">
+        <h2>Input Games to List</h2>
+        <ul>
+            <li>
+                <input type="checkbox" id="game1" name="checked_1" value="Chess">
+                <label for="game1">Chess</label>
+            </li>
+            <li>
+                <input type="checkbox" id="game2" name="checked_2" value="UNO">
+                <label for="game2">UNO</label>
+            </li>
+            <li>
+                <input type="checkbox" id="game3" name="checked_3" value="Scrabble">
+                <label for="game3">Scrabble</label>
+            </li>
+            <li>
+                <input type="text" id="input" name="input" placeholder="Input game">
+                <label for="input">Manual entry</label>
+            </li>
+        </ul>
+        <button type="submit">Add to List</button>
+    </form>
+    <form action="/clear" method="POST">
+        <button type="submit">Clear List</button>
+    </form>
+
+
+<h3>List of Inputted Games</h3>
+
+<ul>
+    {% for game in inputted_list %}
+        <li>{{ game }}</li>
+    {% endfor %}
+</ul>
+
+<h4>{{ error_message }}</h4>
+<h3>Recommendations</h3>
+<ul>
+    {% for game in recommendation_list %}
+        <li>{{ game }}</li>
+    {% endfor %}
+</ul>
 
 <h2>Approach</h2>
 <p>
-
+The model works by comparing the qualities of each game (such as player count, game duration, type of game, game mechanics, etc.) 
+and finds games that share those similarities.  The function runs this comparison for every game in the inputted board game list, and
+outputs the results with the best fitting examples listed first.  If some games in the inputted board game list are similar to each other, 
+the model will tend to give priority to those games when making its recommendations.  
 </p>
 
 <h2>Results</h2>
 <p>
-
+The model gives great results based on testing multiple different game lists.  It gives reasonable good results for one game, but the 
+model tends to give better results the more games in the inputted list.  
 </p>
-
-<h2>Try it out!</h2>
-<p>
-
-</p>
-
 {% endblock %}

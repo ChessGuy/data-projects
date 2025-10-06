@@ -10,3 +10,7 @@ h1 {
 h2 {
     text-emphasis: Bold;
 }
+
+h4 {
+    color: red;
+}
