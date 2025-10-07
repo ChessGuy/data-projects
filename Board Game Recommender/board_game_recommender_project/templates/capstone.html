@@ -41,6 +41,14 @@ button to see the results.  You can also use the "Clear List" button to start a 
                 <label for="game3">Scrabble</label>
             </li>
             <li>
+                <input type="checkbox" id="game4" name="checked_4" value="Rummy">
+                <label for="game4">Rummy</label>
+            </li>
+            <li>
+                <input type="checkbox" id="game5" name="checked_5" value="Monopoly">
+                <label for="game5">Monopoly</label>
+            </li>
+            <li>
                 <input type="text" id="input" name="input" placeholder="Input game">
                 <label for="input">Manual entry</label>
             </li>
@@ -66,6 +74,7 @@ button to see the results.  You can also use the "Clear List" button to start a 
     <input type="number" min="0" class="no-arrows" id="age" name="age" placeholder="Input player age">
     <label for="age">Minimum player age</label>
     <br>
+
     <input type="number" min="0" class="no-arrows" id="player_count" name="player_count" placeholder="Input player count">
     <label for="player_count">Minimum player count</label>
     <br>
@@ -74,12 +83,13 @@ button to see the results.  You can also use the "Clear List" button to start a 
     <label for="play_time">Maximum game length (minutes)</label>
 
     <br>
-    <input type="number" min="1" max="'5" class="no-arrows" id="complexity" name="complexity" placeholder="Input game complexity">
-    <label for="complexity">Maximum game complexity (1 - 5)</label>
+    <input type="number" step="0.01" min="1" max="'5" class="no-arrows" id="complexity" name="complexity" placeholder="Input game complexity">
+    <label for="complexity">Maximum game complexity (1.00 - 5.00)</label>
+
     <br><br>
     <button type="submit">Find Recommendations</button>
 </form>
-
+<h4>{{ filter_values }}</h4>
 <h5>{{ error_message }}</h5>
 
 <h3>Recommendations (Top 20)</h3>
@@ -93,7 +103,7 @@ button to see the results.  You can also use the "Clear List" button to start a 
 <p>
 The model works by comparing the qualities of each game (such as player count, game duration, type of game, game mechanics, etc.) 
 and finds games that share those similarities.  The function runs this comparison for every game in the inputted board game list, and
-outputs the results with the best fitting examples listed first.  If some games in the inputted board game list are similar to each other, 
+outputs the results sorted by a custom rating (average rating * number of users who rated the game).  If some games in the inputted board game list are similar to each other, 
 the model will tend to give priority to those games when making its recommendations.  
 </p>
 
